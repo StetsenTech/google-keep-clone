@@ -54,10 +54,10 @@ class App {
       const text = this.$noteText.value;
       const hasNote = title || text;
 
-      if(isFormClicked) {
+      if (isFormClicked) {
         this.openForm();
       } else if (hasNote) {
-        this.addNote({title, text});
+        this.addNote({ title, text });
       } else {
         this.closeForm();
       }
@@ -86,16 +86,16 @@ class App {
     }
   }
   
-  closeModal() {
+  closeModal(event) {
     this.editNote();
     this.$modal.classList.toggle('open-modal');
   }
 
 
-  addNote({title, text}) {
+  addNote({ title, text }) {
     const newNote = {
-      title: title,
-      text: text,
+      title,
+      text,
       color: 'white',
       id: this.notes.length > 0 ? this.notes[this.notes.length - 1].id + 1 : 1
     };
@@ -119,8 +119,8 @@ class App {
     const title = this.$modalTitle.value;
     const text = this.$modalText.value;
 
-    this.notes.map(note => 
-      note.id === Number(this.id) ? {...note, title , text} : note
+    this.notes = this.notes.map(note => 
+      note.id === Number(this.id) ? { ...note, title , text } : note
     );
 
     this.displayNotes();
