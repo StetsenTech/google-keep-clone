@@ -16,6 +16,7 @@ class App {
     this.$modalTitle = document.querySelector('.modal-title');
     this.$modalText = document.querySelector('.modal-text');
     this.$modalCloseButton = document.querySelector('.modal-close-button');
+    this.$colorTooltip = document.querySelector('#color-tooltip');
 
     this.addEventListener();
   }
@@ -26,6 +27,30 @@ class App {
       this.selectNote(event);
       this.openModal(event);
     });
+
+    document.body.addEventListener('mouseover', event => {
+      this.openToolTip(event);
+    });
+
+    document.body.addEventListener('mouseuout', event => {
+      this.closeToolTip(event);
+    });
+
+    
+    this.$colorTooltip.addEventListener('mouseover', function() {
+      this.style.display = 'flex';  
+    });
+    
+    this.$colorTooltip.addEventListener('mouseout', function() {
+       this.style.display = 'none'; 
+    });
+    
+    this.$colorTooltip.addEventListener('click', event => {
+       const color = event.target.dataset.color; 
+       if (color) {
+        this.editNoteColor(color);
+       }
+    })
 
     this.$form.addEventListener('submit', event => {
         event.preventDefault();
@@ -92,6 +117,21 @@ class App {
   }
 
 
+  openToolTip(event) {
+    if(!event.target.matches('.toolbar-color')) return;
+    // this.id = event.target.nextElementSibling.dataset.id;
+    this.id = event.target.dataset.id;
+    const noteCoords = event.target.getBoundingClientRect();
+    const horizontal = noteCoords.left; // + window.scrollX;
+    const vertical = noteCoords.top; // + window.scrollY;
+    this.$colorTooltip.style.transform =`translate(${horizontal}px, ${vertical}px)`;
+    this.$colorTooltip.style.display = 'flex';
+  }
+
+  closeToolTip(event) {
+
+  }
+
   addNote({ title, text }) {
     const newNote = {
       title,
@@ -126,6 +166,14 @@ class App {
     this.displayNotes();
   }
 
+  editNoteColor(color) {
+    this.notes = this.notes.map(note => 
+      note.id === Number(this.id) ? { ...note, color} : note
+    );
+
+    this.displayNotes();
+  }
+
 
   displayNotes() {
     const hasNotes = this.notes.length > 0;
@@ -137,7 +185,7 @@ class App {
         <div class="note-text">${note.text}</div>
         <div class="toolbar-container">
           <div class="toolbar">
-            <img class="toolbar-color" src="https://icon.now.sh/palette">
+            <img class="toolbar-color" data-id=${note.id} src="https://icon.now.sh/palette">
             <img class="toolbar-delete" src="https://icon.now.sh/delete">
           </div>
         </div>
